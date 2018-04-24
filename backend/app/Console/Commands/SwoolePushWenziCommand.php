@@ -53,7 +53,13 @@ class SwoolePushWenziCommand extends Command
         $server->on('close', function ($ser, $fd) {
             echo "client {$fd} closed\n";
         });
-
+        // swoole 配置项 ： 参考https://wiki.swoole.com/wiki/page/274.html
+        $server->set([
+                         'worker_num' => 4,
+                         'daemonize' => true,
+                         'backlog' => 128,
+                         'reactor_num'=>4
+                     ]);
         $server->start();
     }
 }

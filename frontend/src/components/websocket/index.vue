@@ -35,7 +35,7 @@ export default {
       this.wenzi_message_websocket.send(data)
     },
     connect() {
-      // 参考链接：swoole 快速起步： https://wiki.swoole.com/wiki/page/479.html
+      // 参考链接：swoole 快速起步 swoole 部分： https://wiki.swoole.com/wiki/page/479.html
       if (window.wenzi_message_websocket) {
         this.wenzi_message_websocket = window.wenzi_message_websocket
         return
@@ -46,8 +46,7 @@ export default {
 
       wenzi_message_websocket.onopen = (evt) => {
         var data = {
-          action: 'open',
-          token: this.$store.state.user.token
+          action: 'open'
         }
 
         this.sendWebSocketData(data)

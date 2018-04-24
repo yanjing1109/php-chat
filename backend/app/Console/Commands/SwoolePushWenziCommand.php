@@ -32,12 +32,13 @@ class SwoolePushWenziCommand extends Command
 
     /**
      * Execute the console command.
-     *
+     * 启动swoole 服务
      * @return mixed
      */
     public function handle()
     {
         $port = config('swoole.push_wenzi_port');
+
         //
         $server = new \swoole_websocket_server("0.0.0.0", $port);
 

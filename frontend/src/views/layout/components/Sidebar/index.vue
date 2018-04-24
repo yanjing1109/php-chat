@@ -1,8 +1,14 @@
 <template>
   <scroll-bar>
-    <el-menu mode="vertical" unique-opened :default-active="$route.path" :collapse="isCollapse" background-color="#304156" text-color="#fff" active-text-color="#409EFF">
-      <sidebar-item :routes="routes"></sidebar-item>
-    </el-menu>
+    <el-row>
+      <el-col :span="24">
+        <div class="gonggao" style="">
+          系统消息：虎牙依法对直播内容进行24小时巡查，禁止传播违法违规、封建迷信、
+          暴力血腥、低俗色情、招嫖诈骗、违禁品等不良信息，坚决维护青少年群体精神文明健康。
+          请勿轻信各类招聘征婚、代练代抽、刷钻、购买礼包码、游戏币、电商贩卖等广告信息，以免上当受骗。
+        </div>
+      </el-col>
+    </el-row>
   </scroll-bar>
 </template>
 
@@ -26,3 +32,18 @@ export default {
   }
 }
 </script>
+<style rel="stylesheet/scss" lang="scss" scoped>
+  .gonggao {
+    background-color: rgba(103,194,58,.1);
+    display: inline-block;
+    padding: 0 10px;
+    line-height: 30px;
+    font-size: 12px;
+    color: #409eff;
+    border-radius: 4px;
+    box-sizing: border-box;
+    border: 1px solid rgba(64,158,255,.2);
+    border-color: rgba(103,194,58,.2);
+    color: #67c23a;
+  }
+</style>

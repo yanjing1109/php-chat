@@ -37,6 +37,13 @@ class SwoolePushWenziCommand extends Command
      */
     public function handle()
     {
+        cli_set_process_title('push_wenzi_swoole');
+        $pidpath = __DIR__.'/run/pushwenzi.pid';
+        if (check_swoole_process_exist($pidpath))
+        {
+            exit();
+        }
+//        write_process_pid($pidpath);
         $port = config('swoole.push_wenzi_port');
 
         //

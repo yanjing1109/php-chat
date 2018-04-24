@@ -8,7 +8,6 @@
 # install dependencies
 composer install
 
-#  单线程爬虫脚本测试时长
-cd phpCrawlers/backend
-php artisan Crawler
+#  定时脚本配置, 做到无人值守100%可用
+* * * * * /usr/bin/php /home/buyf/go/src/phpCrawlers/backend/artisan schedule:run >> /dev/null 2>&1
 ```

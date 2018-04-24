@@ -42,7 +42,7 @@ export default {
 
       console.log('开始连接')
 
-      var wenzi_message_websocket = new WebSocket(config.global_websocket_uri)
+      var wenzi_message_websocket = new WebSocket(config.wenzi_message_websocket_uri)
 
       wenzi_message_websocket.onmessage = (evt) => {
         var res = JSON.parse(evt.data)

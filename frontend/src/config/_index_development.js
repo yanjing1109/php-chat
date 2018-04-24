@@ -1,5 +1,5 @@
 export default {
-  wenzi_message_websocket_uri: 'ws://tickets.2345.com:12345/tickets/globalWebsocket',
+  wenzi_message_websocket_uri: 'ws://phplive.com:88/pushwenziwebsocket',
 
   env: 'development'
 }

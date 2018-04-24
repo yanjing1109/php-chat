@@ -8,6 +8,17 @@
           请勿轻信各类招聘征婚、代练代抽、刷钻、购买礼包码、游戏币、电商贩卖等广告信息，以免上当受骗。
         </div>
       </el-col>
+      <el-col :span="24">
+        <el-form :inline="true"  size="small" :model="formInline" class="demo-form-inline">
+          <el-form-item>
+            <el-input v-model="formInline.mess" placeholder="请文明发言"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="onSubmit">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <websocket></websocket>
     </el-row>
   </scroll-bar>
 </template>
@@ -16,9 +27,22 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import ScrollBar from '@/components/ScrollBar'
+import Websocket from '@/components/websocket'
 
 export default {
-  components: { SidebarItem, ScrollBar },
+  data() {
+    return {
+      formInline: {
+        mess: ''
+      }
+    }
+  },
+  components: { SidebarItem, ScrollBar, Websocket },
+  methods: {
+    onSubmit() {
+      console.log('submit!')
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar'

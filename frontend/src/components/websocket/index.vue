@@ -35,22 +35,14 @@ export default {
       this.wenzi_message_websocket.send(data)
     },
     connect() {
+      // 参考链接：swoole 快速起步： https://wiki.swoole.com/wiki/page/479.html
       if (window.wenzi_message_websocket) {
         this.wenzi_message_websocket = window.wenzi_message_websocket
         return
       }
 
       console.log('开始连接')
-
       var wenzi_message_websocket = new WebSocket(config.wenzi_message_websocket_uri)
-
-      wenzi_message_websocket.onmessage = (evt) => {
-        var res = JSON.parse(evt.data)
-        if (res.action === 'close') {
-          alert(res.data.message)
-          this.closeWebPage()
-        }
-      }
 
       wenzi_message_websocket.onopen = (evt) => {
         var data = {
@@ -61,6 +53,14 @@ export default {
         this.sendWebSocketData(data)
       }
 
+      wenzi_message_websocket.onmessage = (evt) => {
+        var res = JSON.parse(evt.data)
+        if (res.action === 'close') {
+          alert(res.data.message)
+          this.closeWebPage()
+        }
+      }
+
       wenzi_message_websocket.onclose = (evt) => {
         console.log(evt)
         console.log('断开连接')
@@ -68,6 +68,10 @@ export default {
         this.wenzi_message_websocket = null
         console.log('reconnection')
         this.connect()
+      }
+
+      wenzi_message_websocket.onerror = function(evt, e) {
+        console.log('Error occured: ' + evt.data)
       }
 
       window.wenzi_message_websocket = wenzi_message_websocket

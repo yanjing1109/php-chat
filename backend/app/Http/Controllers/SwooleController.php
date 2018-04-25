@@ -9,6 +9,20 @@ use App\Models\News;
 
 class SwooleController extends BaseController
 {
+
+    use \App\Traits\IpTrait;
+    private $allowIps = [];
+
+    public function __construct()
+    {
+        // 这里可以做用户认证，进行权限控制
+//        if (!isset($_GET['user']) || $_GET['user'] != "buyingfei")
+//        {
+//            exit('user Error');
+//        }
+        // 这里做ip 限制
+        $this->checkIpBlack(config('swoole.all_ip'));
+    }
     /**
      * actionStopSwoole function
      *

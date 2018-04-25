@@ -27,7 +27,8 @@
             "App\\": "app/"
         },
         "files": [
-            "app/Helpers/swoole.php"
+            "app/Helpers/swoole.php",
+            "app/Helpers/common.php"
         ]
     },
     "autoload-dev": {

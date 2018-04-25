@@ -15,6 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('news/list', 'NewsController@getList');
-Route::post('news/detail', 'NewsController@getDetail');
-Route::post('news/modifyNews', 'NewsController@modifyNews');
+Route::get('swoole/stopSwoole', 'SwooleController@stopSwoole');
+Route::get('swoole/startSwoole', 'SwooleController@startSwoole');

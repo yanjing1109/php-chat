@@ -68,6 +68,12 @@ class SwoolePushWenziCommand extends Command
                          'backlog' => 128,
                          'reactor_num'=>4
                      ]);
+
+        $server->on('WorkerStart', function ($server) {
+            $server->tick(60 * 1000, function () use ($server) {
+                check_process_stop($server, SWOOLE_STOP_FILE);
+            });
+        });
         $server->start();
     }
 }

@@ -14,6 +14,9 @@ class SwoolePushWenziCommand extends Command
      */
     protected $signature = 'SwoolePushWenzi';
 
+    // 异步协成redis 客户端
+    private $coroutineRedisObj = null;
+
     /**
      * The console command description.
      *
@@ -87,5 +90,31 @@ class SwoolePushWenziCommand extends Command
     {
         echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
         $server->push($frame->fd, "this is server");
+        $swooleModel = new \App\Models\SwooleModel($this->getCoroutineRedis());
+        $swooleModel->setValueByRedis('uid1', 1);
+
+    }
+
+    /**
+     * 获取协成redis 客户端
+     * getCoroutineRedis function
+     * 参考链接： https://wiki.swoole.com/wiki/page/589.html
+     * @return \Swoole\Coroutine\Redis
+     */
+    public function getCoroutineRedis()
+    {
+        if (null == $this->coroutineRedisObj)
+        {
+            $this->coroutineRedisObj = new \Swoole\Coroutine\Redis();
+            var_dump(config('database.redis.default.host'));
+            $this->coroutineRedisObj->connect(config('database.redis.default.host'), config('database.redis.default.port'));
+//            var_dump($this->coroutineRedisObj);
+            //            if (isset($config['auth']) && $config['auth'])
+            //            {
+            //                $this->redis->auth($config['auth']);
+            //            }
+        }
+
+        return $this->coroutineRedisObj;
     }
 }

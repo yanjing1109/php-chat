@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Redis;
 
 class SwoolePushWenziCommand extends Command
 {
@@ -30,6 +31,8 @@ class SwoolePushWenziCommand extends Command
         parent::__construct();
     }
 
+
+
     /**
      * Execute the console command.
      * 启动swoole 服务
@@ -53,14 +56,12 @@ class SwoolePushWenziCommand extends Command
             echo "server: handshake success with fd{$request->fd}\n";
         });
 
-        $server->on('message', function (\swoole_websocket_server $server, $frame) {
-            echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
-            $server->push($frame->fd, "this is server");
-        });
+        $server->on('message', [$this, 'onMessage']);
 
         $server->on('close', function ($ser, $fd) {
             echo "client {$fd} closed\n";
         });
+
         // swoole 配置项 ： 参考https://wiki.swoole.com/wiki/page/274.html
         $server->set([
                          'worker_num' => 4,
@@ -74,6 +75,17 @@ class SwoolePushWenziCommand extends Command
                 check_process_stop($server, SWOOLE_STOP_FILE);
             });
         });
+
+        $server->on('start', function ($server) {
+            startWork();
+        });
+
         $server->start();
+    }
+
+    public function onMessage(\swoole_websocket_server $server, $frame)
+    {
+        echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
+        $server->push($frame->fd, "this is server");
     }
 }

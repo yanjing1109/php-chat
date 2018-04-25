@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\News;
+use Illuminate\Support\Facades\Redis;
 
 class SwooleController extends BaseController
 {
@@ -47,5 +47,14 @@ class SwooleController extends BaseController
         {
             unlink(SWOOLE_STOP_FILE);
         }
+    }
+
+    /**
+     * 打开swoole 链接
+     * @param Request $request
+     */
+    public function open(Request $request, $data)
+    {
+
     }
 }

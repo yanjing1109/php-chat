@@ -6,10 +6,14 @@
  */
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 define('BASEPATH', __DIR__);
 
 define('SWOOLE_STOP_FILE', BASEPATH . '/../Console/Commands/run/swoole.stop');
+
+
 
 /**
  * 输入日志
@@ -107,4 +111,31 @@ function check_process_stop($wsServer, $file)
         exit();
     }
 }
+
+
+// 获取用户token；没有则以时间戳代替 token
+function get_user_token()
+{
+    // 获取请求头token
+    $token = $_SERVER['HTTP_X_TOKEN'] ?? null;
+    if ($token === null)
+    {
+        $token = session('token', time());;
+    }
+//
+//    if ($token === null && isset($_COOKIE['token']))
+//    {
+//        $token = $_COOKIE['token'];
+//    }
+    return $token;
+}
+
+// swoole 启动，初期化数据
+function startWork()
+{
+    Redis::set('quest:ws:socket:connect','');
+    Redis::set('quest:ws:socket:connect:fd','');
+}
+
+
 

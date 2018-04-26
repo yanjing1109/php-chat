@@ -87,14 +87,6 @@ class SwoolePushWenziCommand extends Command
         $server->start();
     }
 
-    public function onMessage(\swoole_websocket_server $server, $frame)
-    {
-        echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
-//        $server->push($frame->fd, "this is server");
-        $swooleModel = new \App\Models\SwooleModel($this->getCoroutineRedis());
-        $swooleModel->setValueByRedis('uid:'.get_user_token(), session('token'));
-    }
-
     // websocket  建立链接时发送token
     public function onOpen(\swoole_websocket_server $server, $request)
     {
@@ -102,6 +94,21 @@ class SwoolePushWenziCommand extends Command
         $token = uniqid('', false);
         $this->responseWebSocket($request->fd, SWOOLE_OPEN,[ 'token' => $token ]);
     }
+
+    public function onMessage(\swoole_websocket_server $server, $frame)
+    {
+        $data = json_decode($frame->data,true);
+        $action = $data['action'];
+        if (!$data['token'])
+        {
+            $this->responseWebSocket($frame->fd, SWOOLE_UNUSEFULL,['message' => '缺少token']);
+        }
+        $data['fd'] = $frame->fd;
+        $swooleModel = new \App\Models\SwooleModel($this->getCoroutineRedis());
+        $swooleModel->$action($data);
+    }
+
+
 
     /**
      * 获取协成redis 客户端

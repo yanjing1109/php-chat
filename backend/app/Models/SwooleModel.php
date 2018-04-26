@@ -9,6 +9,12 @@ class SwooleModel
     //
     private $redisObj = null;
 
+    // 保存所有资源连接符
+    private $resourceConnecntions = [];
+
+    // 保存所有用户为单位链接
+    private $userConnecntions = [];
+
     public function __construct($redisObj)
     {
         $this->redisObj = $redisObj;
@@ -49,6 +55,22 @@ class SwooleModel
             $redis->set($key, $value);
         }
     }
+
+    // 保存链接对象 到redis
+    public function saveConnections()
+    {
+        $this->setValueByRedis('ws:socket:connect', $this->userConnecntions);
+        $this->setValueByRedis('ws:socket:connect:fd', $this->resourceConnecntions);
+    }
+
+    public function open($data)
+    {
+        $this->resourceConnecntions[$data['fd']] = $data['token'];
+        $this->userConnecntions[$data['token']] = $data['fd'];
+        $this->saveConnections();
+    }
+
+
 
 
 }

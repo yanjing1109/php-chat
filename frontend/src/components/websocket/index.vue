@@ -31,7 +31,8 @@ export default {
       if (!this.wenzi_message_websocket || this.wenzi_message_websocket.readyState === 3) {
         return
       }
-
+      // websocket 请求加上token 作为唯一标识
+      data.token = this.token
       data = JSON.stringify(data)
       this.wenzi_message_websocket.send(data)
     },
@@ -58,9 +59,8 @@ export default {
         if (res.action === 'open') {
           // 没有token ，设置token
           if (this.token === '') {
-            this.$store.dispatch('modifyToken', res.data.token).then(() => {
-              this.token = this.$store.state.user.token
-            })
+            this.token = res.data.token
+            this.$store.dispatch('modifyToken', res.data.token)
           }
         }
         if (res.action === 'close') {

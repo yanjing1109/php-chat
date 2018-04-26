@@ -43,14 +43,6 @@ class SwooleController extends BaseController
      */
     public function startSwoole()
     {
-        $value = session('key');
-        // 指定默认值...
-        $value = session('key', 'default');
-        var_dump(session('key'),$value);
-        // 存储数据到session...
-        session(['key' => 'value']);
-        var_dump(session('key'));
-        die();
         if (file_exists(SWOOLE_STOP_FILE))
         {
             unlink(SWOOLE_STOP_FILE);

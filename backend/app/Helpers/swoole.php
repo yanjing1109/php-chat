@@ -15,6 +15,7 @@ define('SWOOLE_STOP_FILE', BASEPATH . '/../Console/Commands/run/swoole.stop');
 
 #定义swoole 动作
 define('SWOOLE_OPEN','open');
+define('SWOOLE_UNUSEFULL','unusefull');
 
 
 
@@ -141,8 +142,8 @@ function get_user_token()
 // swoole 启动，初期化数据
 function startWork()
 {
-    Redis::set('quest:ws:socket:connect','');
-    Redis::set('quest:ws:socket:connect:fd','');
+    Redis::set('ws:socket:connect','');
+    Redis::set('ws:socket:connect:fd','');
 }
 
 

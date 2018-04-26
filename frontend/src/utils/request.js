@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '@/store'
 
 // 创建axios实例
 const service = axios.create({
@@ -10,7 +11,10 @@ const service = axios.create({
 service.interceptors.request.use(config => {
   // 设置请求头
   config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-
+  // Do something before request is sent
+  if (store.getters.token) {
+    config.headers['X-Token'] = store.getters.token // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+  }
   // 设置请求数据
   if (config.data instanceof Object) {
     let dt = ''

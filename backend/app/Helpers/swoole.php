@@ -13,6 +13,9 @@ define('BASEPATH', __DIR__);
 
 define('SWOOLE_STOP_FILE', BASEPATH . '/../Console/Commands/run/swoole.stop');
 
+#定义swoole 动作
+define('SWOOLE_OPEN','open');
+
 
 
 /**
@@ -120,7 +123,12 @@ function get_user_token()
     $token = $_SERVER['HTTP_X_TOKEN'] ?? null;
     if ($token === null)
     {
-        $token = session('token', time());;
+        if (!session('token'))
+        {
+            $token =  time();
+            // 存放sessoin
+            session(['token' =>$token]);
+        }
     }
 //
 //    if ($token === null && isset($_COOKIE['token']))

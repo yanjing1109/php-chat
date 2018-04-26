@@ -10,6 +10,7 @@ import config from '@/config/index'
 export default {
   data() {
     return {
+      token: '',
       uri: this.$route.path,
       wenzi_message_websocket: undefined,
       dialogShow: false,
@@ -54,6 +55,14 @@ export default {
 
       wenzi_message_websocket.onmessage = (evt) => {
         var res = JSON.parse(evt.data)
+        if (res.action === 'open') {
+          // 没有token ，设置token
+          if (this.token === '') {
+            this.$store.dispatch('modifyToken', res.data.token).then(() => {
+              this.token = this.$store.state.user.token
+            })
+          }
+        }
         if (res.action === 'close') {
           alert(res.data.message)
           this.closeWebPage()
@@ -78,13 +87,13 @@ export default {
     },
 
     registerEvent() {
-//      EventBus.$on('custom-online', (manual) => {
-//        this.online(manual)
-//      })
+      //      EventBus.$on('custom-online', (manual) => {
+      //        this.online(manual)
+      //      })
     },
 
     destroyEvent() {
-//      EventBus.$off('custom-online')
+      //      EventBus.$off('custom-online')
     }
   }
 }

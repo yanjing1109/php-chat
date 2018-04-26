@@ -17,6 +17,9 @@ class SwoolePushWenziCommand extends Command
     // 异步协成redis 客户端
     private $coroutineRedisObj = null;
 
+    // websocket server 对象
+    private $wsServer = null;
+
     /**
      * The console command description.
      *
@@ -55,9 +58,7 @@ class SwoolePushWenziCommand extends Command
         //
         $server = new \swoole_websocket_server("0.0.0.0", $port);
 
-        $server->on('open', function (\swoole_websocket_server $server, $request) {
-            echo "server: handshake success with fd{$request->fd}\n";
-        });
+        $server->on('open', [$this, 'onOpen']);
 
         $server->on('message', [$this, 'onMessage']);
 
@@ -89,10 +90,17 @@ class SwoolePushWenziCommand extends Command
     public function onMessage(\swoole_websocket_server $server, $frame)
     {
         echo "receive from {$frame->fd}:{$frame->data},opcode:{$frame->opcode},fin:{$frame->finish}\n";
-        $server->push($frame->fd, "this is server");
+//        $server->push($frame->fd, "this is server");
         $swooleModel = new \App\Models\SwooleModel($this->getCoroutineRedis());
-        $swooleModel->setValueByRedis('uid1', 1);
+        $swooleModel->setValueByRedis('uid:'.get_user_token(), session('token'));
+    }
 
+    // websocket  建立链接时发送token
+    public function onOpen(\swoole_websocket_server $server, $request)
+    {
+        $this->wsServer = $server;
+        $token = uniqid('', false);
+        $this->responseWebSocket($request->fd, SWOOLE_OPEN,[ 'token' => $token ]);
     }
 
     /**
@@ -116,5 +124,35 @@ class SwoolePushWenziCommand extends Command
         }
 
         return $this->coroutineRedisObj;
+    }
+
+
+    /**
+     * 回应 websocket 响应
+     * 参考链接： https://wiki.swoole.com/wiki/page/15.html
+     * @param integer $fd
+     * @param string $action
+     * @param array|string $data
+     * @param string $messageType
+     *
+     * @return void
+     */
+    public function responseWebSocket($fd, $action, $data = [], $messageType = '')
+    {
+        // 资源对象是否存在
+        if (!$this->wsServer->exist($fd))
+        {
+            return;
+        }
+
+        $ret = [
+            'action' => $action,
+            'data' => $data,
+            'type' => $messageType
+        ];
+
+        $retStr = json_encode($ret);
+        // 回复消息
+        $this->wsServer->push($fd, $retStr);
     }
 }

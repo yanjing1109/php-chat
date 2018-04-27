@@ -11,10 +11,10 @@
       <el-col :span="24">
         <el-form :inline="true"  size="small" :model="formInline" class="demo-form-inline">
           <el-form-item>
-            <el-input v-model="formInline.mess" placeholder="请文明发言"></el-input>
+            <el-input v-model="mess" placeholder="请文明发言"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit">查询</el-button>
+            <el-button type="primary" @click="onSubmit">发送</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -28,19 +28,19 @@ import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import ScrollBar from '@/components/ScrollBar'
 import Websocket from '@/components/websocket'
+import EventBus from '@/events/event-bus.js'
 
 export default {
   data() {
     return {
-      formInline: {
-        mess: ''
-      }
+      mess: ''
     }
   },
   components: { SidebarItem, ScrollBar, Websocket },
   methods: {
     onSubmit() {
-      console.log('submit!')
+      EventBus.$emit('send-message', { message: this.mess, action: 'sendMessage' })
+      this.mess = ''
     }
   },
   computed: {

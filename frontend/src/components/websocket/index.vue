@@ -5,7 +5,7 @@
 
 <script>
 import config from '@/config/index'
-//  import EventBus from '@/events/event-bus.js'
+import EventBus from '@/events/event-bus.js'
 
 export default {
   data() {
@@ -87,13 +87,13 @@ export default {
     },
 
     registerEvent() {
-      //      EventBus.$on('custom-online', (manual) => {
-      //        this.online(manual)
-      //      })
+      EventBus.$on('send-message', (data) => {
+        this.sendWebSocketData(data)
+      })
     },
 
     destroyEvent() {
-      //      EventBus.$off('custom-online')
+      EventBus.$off('send-message')
     }
   }
 }

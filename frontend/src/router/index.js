@@ -26,7 +26,7 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/news',
+    redirect: '/liveing',
     hidden: true
   }
   // { path: '*', redirect: '/404', hidden: true }
@@ -34,24 +34,17 @@ export const constantRouterMap = [
 
 export const asyncRouterMap = [
   {
-    path: '/news',
+    path: '/liveing',
     component: Layout,
-    name: '新闻管理',
-    redirect: '/news/list',
-    meta: { title: '新闻管理', icon: 'setting' },
+    name: '2345 直播中心',
+    redirect: '/liveing/index',
+    meta: { title: '直播中心', icon: 'setting' },
     children: [
       {
-        path: 'list',
-        name: '新闻列表',
-        component: () => import('@/views/news/list'),
-        meta: { title: '新闻列表', icon: 'table' }
-      },
-      {
-        path: 'detail',
-        hidden: true,
-        name: '新闻详情',
-        component: () => import('@/views/news/detail'),
-        meta: { title: '新闻详情', icon: 'table' }
+        path: 'index',
+        name: '直播中心',
+        component: () => import('@/views/liveing/index'),
+        meta: { title: '直播中心', icon: 'table' }
       }
     ]
   }

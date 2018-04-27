@@ -35,6 +35,7 @@ import EventBus from '@/events/event-bus.js'
 export default {
   data() {
     return {
+      formInline: {},
       mess: ''
     }
   },

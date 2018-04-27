@@ -24,6 +24,7 @@ export default {
   },
 
   destroyed() {
+    this.destroyEvent()
   },
 
   methods: {

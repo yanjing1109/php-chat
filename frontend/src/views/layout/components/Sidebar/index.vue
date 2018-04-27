@@ -8,6 +8,7 @@
           请勿轻信各类招聘征婚、代练代抽、刷钻、购买礼包码、游戏币、电商贩卖等广告信息，以免上当受骗。
         </div>
       </el-col>
+      <message-log></message-log>
       <el-col :span="24">
         <el-form :inline="true"  size="small" :model="formInline" class="demo-form-inline">
           <el-form-item>
@@ -26,6 +27,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
+import MessageLog from './messageLog'
 import ScrollBar from '@/components/ScrollBar'
 import Websocket from '@/components/websocket'
 import EventBus from '@/events/event-bus.js'
@@ -36,10 +38,11 @@ export default {
       mess: ''
     }
   },
-  components: { SidebarItem, ScrollBar, Websocket },
+  components: { SidebarItem, ScrollBar, Websocket, MessageLog },
   methods: {
     onSubmit() {
       EventBus.$emit('send-message', { message: this.mess, action: 'sendMessage' })
+      EventBus.$emit('add-message', { token: this.$store.getters.token, message: this.mess })
       this.mess = ''
     }
   },

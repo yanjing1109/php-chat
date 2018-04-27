@@ -63,6 +63,12 @@ export default {
             this.token = res.data.token
             this.$store.dispatch('modifyToken', res.data.token)
           }
+          // 重发open，保存会还
+          var data = {
+            action: 'open'
+          }
+
+          this.sendWebSocketData(data)
         }
         if (res.action === 'close') {
           alert(res.data.message)

@@ -1,6 +1,6 @@
 <template>
   <div class="menu-wrapper">
-    <el-row v-for="item in list">
+    <el-row v-for="item in list" :key="item.token">
       <el-col :span="10" class="user">{{ item.token }}：</el-col>
       <el-col :span="14" style="color: #E6A23C">{{ item.message }}</el-col>
     </el-row>
@@ -14,14 +14,6 @@ export default {
   data() {
     return {
       list: [
-        {
-          token: '小明',
-          message: '什么时间开始直播那'
-        },
-        {
-          token: '小明',
-          message: '快开播啦'
-        }
       ]
     }
   },

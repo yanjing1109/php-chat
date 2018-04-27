@@ -1,5 +1,5 @@
 'use strict'
 module.exports = {
   NODE_ENV: '"production"',
-  BASE_API: '"http://phpcrawlers.com:88"',
+  BASE_API: '"http://live.2345.com:88"',
 }

@@ -101,7 +101,7 @@ class SwoolePushWenziCommand extends Command
         $action = $data['action'];
         if (!$data['token'])
         {
-            $this->responseWebSocket($server, $frame->fd, SWOOLE_UNUSEFULL,['message' => '缺少token']);
+            responseWebSocket($server, $frame->fd, SWOOLE_UNUSEFULL,['message' => '缺少token']);
             return;
         }
         $data['fd'] = $frame->fd;
@@ -156,5 +156,6 @@ class SwoolePushWenziCommand extends Command
 
         return $this->coroutineRedisObj;
     }
+
 
 }

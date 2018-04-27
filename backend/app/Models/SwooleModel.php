@@ -56,21 +56,37 @@ class SwooleModel
         }
     }
 
-    // 保存链接对象 到redis
-    public function saveConnections()
+
+    //发送open action 保存链接
+    public function open($data, $server)
     {
-        $this->setValueByRedis('ws:socket:connect', $this->userConnecntions);
-        $this->setValueByRedis('ws:socket:connect:fd', $this->resourceConnecntions);
+        $oldConnnetion = $this->getValueByRedis('ws:socket:connect');
+        $oldConnnetion[$data['fd']] = $data['token'];
+
+        $oldResouceConnection = $this->getValueByRedis('ws:socket:connect:fd');
+        $oldResouceConnection[$data['token']] = $data['fd'];
+
+        $this->setValueByRedis('ws:socket:connect', $oldConnnetion);
+        $this->setValueByRedis('ws:socket:connect:fd', $oldResouceConnection);
     }
 
-    public function open($data)
+    // 回复消息
+    public function sendMessage($data, $server)
     {
-        $this->resourceConnecntions[$data['fd']] = $data['token'];
-        $this->userConnecntions[$data['token']] = $data['fd'];
-        $this->saveConnections();
+        $fds = $this->getValueByRedis('ws:socket:connect:fd');
+        if ($fds)
+        {
+            //将消息发送给所有已有链接
+            foreach ($fds as $fd)
+            {
+                if ($fd != $data['fd'])
+                {
+                    // 将消息发送给其它人
+                    $data['action'] = SWOOLE_REPLY_MESSAGE;
+                    responseWebSocket($server, $fd, SWOOLE_REPLY_MESSAGE, $data);
+                    output_log(['fd' =>$fd, 'data' => $data]);
+                }
+            }
+        }
     }
-
-
-
-
 }

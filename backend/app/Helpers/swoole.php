@@ -16,6 +16,8 @@ define('SWOOLE_STOP_FILE', BASEPATH . '/../Console/Commands/run/swoole.stop');
 #定义swoole 动作
 define('SWOOLE_OPEN','open');
 define('SWOOLE_UNUSEFULL','unusefull');
+define('SWOOLE_SEND_MESSAGE','sendMessage');
+define('SWOOLE_REPLY_MESSAGE','replyMessage');
 
 
 
@@ -144,6 +146,26 @@ function startWork()
 {
     Redis::set('ws:socket:connect','');
     Redis::set('ws:socket:connect:fd','');
+}
+
+// swoole 回复消息
+function responseWebSocket($wsServer, $fd, $action, $data = [], $messageType = '')
+{
+    // 资源对象是否存在
+    if (!$wsServer->exist($fd))
+    {
+        return;
+    }
+
+    $ret = [
+        'action' => $action,
+        'data' => $data,
+        'type' => $messageType
+    ];
+
+    $retStr = json_encode($ret);
+    // 回复消息
+    $wsServer->push($fd, $retStr);
 }
 
 

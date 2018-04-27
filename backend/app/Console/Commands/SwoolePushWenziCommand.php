@@ -62,14 +62,12 @@ class SwoolePushWenziCommand extends Command
 
         $server->on('message', [$this, 'onMessage']);
 
-        $server->on('close', function ($ser, $fd) {
-            echo "client {$fd} closed\n";
-        });
+        $server->on('close', [$this, 'onClose']);
 
         // swoole 配置项 ： 参考https://wiki.swoole.com/wiki/page/274.html
         $server->set([
                          'worker_num' => 4,
-                         'daemonize' => true,
+                         'daemonize' => false, // 是否以守护进程存在
                          'backlog' => 128,
                          'reactor_num'=>4
                      ]);
@@ -92,20 +90,46 @@ class SwoolePushWenziCommand extends Command
     {
         $this->wsServer = $server;
         $token = uniqid('', false);
-        $this->responseWebSocket($request->fd, SWOOLE_OPEN,[ 'token' => $token ]);
+
+        responseWebSocket($server, $request->fd, SWOOLE_OPEN,[ 'token' => $token ]);
     }
 
+    // 发送消息
     public function onMessage(\swoole_websocket_server $server, $frame)
     {
         $data = json_decode($frame->data,true);
         $action = $data['action'];
         if (!$data['token'])
         {
-            $this->responseWebSocket($frame->fd, SWOOLE_UNUSEFULL,['message' => '缺少token']);
+            $this->responseWebSocket($server, $frame->fd, SWOOLE_UNUSEFULL,['message' => '缺少token']);
+            return;
         }
         $data['fd'] = $frame->fd;
         $swooleModel = new \App\Models\SwooleModel($this->getCoroutineRedis());
-        $swooleModel->$action($data);
+        $swooleModel->$action($data,$server);
+    }
+
+    // 删除资源链接，此处不能使用异步操作
+    public function onClose(\swoole_websocket_server $server, $fd)
+    {
+        $userConn = Redis::get('ws:socket:connect') ? json_decode(Redis::get('ws:socket:connect'),true) : [];
+        $resourceConn = Redis::get('ws:socket:connect:fd') ? json_decode(Redis::get('ws:socket:connect:fd'),true) : [];
+
+        // 删除链接资源
+        unset($userConn[$fd]);
+        Redis::set('ws:socket:connect', json_encode($userConn));
+
+        if($resourceConn)
+        {
+            foreach ($resourceConn as  $token => &$resource)
+            {
+                if ($resource == $fd)
+                {
+                    unset($resourceConn[$token]);
+                }
+            }
+        }
+        Redis::set('ws:socket:connect:fd', json_encode($resourceConn));
     }
 
 
@@ -133,33 +157,4 @@ class SwoolePushWenziCommand extends Command
         return $this->coroutineRedisObj;
     }
 
-
-    /**
-     * 回应 websocket 响应
-     * 参考链接： https://wiki.swoole.com/wiki/page/15.html
-     * @param integer $fd
-     * @param string $action
-     * @param array|string $data
-     * @param string $messageType
-     *
-     * @return void
-     */
-    public function responseWebSocket($fd, $action, $data = [], $messageType = '')
-    {
-        // 资源对象是否存在
-        if (!$this->wsServer->exist($fd))
-        {
-            return;
-        }
-
-        $ret = [
-            'action' => $action,
-            'data' => $data,
-            'type' => $messageType
-        ];
-
-        $retStr = json_encode($ret);
-        // 回复消息
-        $this->wsServer->push($fd, $retStr);
-    }
 }

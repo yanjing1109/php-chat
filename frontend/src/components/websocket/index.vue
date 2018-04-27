@@ -68,6 +68,10 @@ export default {
           alert(res.data.message)
           this.closeWebPage()
         }
+
+        if (res.action === 'replyMessage') {
+          EventBus.$emit('add-message', { token: res.data.token, message: res.data.message })
+        }
       }
 
       wenzi_message_websocket.onclose = (evt) => {

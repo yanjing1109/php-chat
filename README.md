@@ -17,5 +17,4 @@ laravel + swoole + vue 直播互动
 * 后端采用laravel 框架 ，使用swoole websocket 长链通信
 * 前端采用vue.js + vuex + vue router + ele UI + webpack 实现 
 #### nginx 代理转发
-* 参考 链接[https://wiki.swoole.com/wiki/page/326.html]
-
+* [参考 链接](https://wiki.swoole.com/wiki/page/326.html)

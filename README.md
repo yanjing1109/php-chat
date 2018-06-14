@@ -11,7 +11,7 @@ laravel + swoole + vue 直播互动
 
 * backend 是后端laravel 项目
 * frontend 是前端vue 项目
-* phplive.com.conf 是nginx 配置文件
+* chat.2345.com.conf 是nginx 配置文件
 
 #### 这次采用前后端分离方式单独实现
 * 后端采用laravel 框架 ，使用swoole websocket 长链通信

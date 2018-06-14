@@ -54,7 +54,6 @@ class SwoolePushWenziCommand extends Command
         }
 //        write_process_pid($pidpath);
         $port = config('swoole.push_wenzi_port');
-
         //
         $server = new \swoole_websocket_server("0.0.0.0", $port);
 
@@ -88,9 +87,10 @@ class SwoolePushWenziCommand extends Command
     // websocket  建立链接时发送token
     public function onOpen(\swoole_websocket_server $server, $request)
     {
+        echo 22222;
         $this->wsServer = $server;
         $token = uniqid('', false);
-
+        var_dump($token);
         responseWebSocket($server, $request->fd, SWOOLE_OPEN,[ 'token' => $token ]);
     }
 

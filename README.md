@@ -1,5 +1,5 @@
 # phpChat
-laravel + swoole + vue 直播互动
+laravel + swoole + vue 直播聊天互动
 
 ###项目实现目标
 1. 实现直播用户发言互动

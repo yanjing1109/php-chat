@@ -1,6 +1,12 @@
 # phpChat
 laravel + swoole + vue 直播聊天互动
 
+###安装要求
+1. laravel 版本比较高5.6.16 ，需要PHP 版本不小于 7.1.3
+2. 安装swoole，同时swoole 配置选项支持协程，包括mysql 协程、redis 协程,请参考swoole 官网
+3. npm 版本大于3.0.0，node 版本大于4.0.0
+
+
 ###项目实现目标
 1. 实现直播用户发言互动
 2. 使用nginx 代理转发websocket 请求，不开放websocket 端口对外访问，减少攻击入口
